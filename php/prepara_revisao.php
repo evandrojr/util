@@ -2,10 +2,10 @@
 $nrevision = $argv[1];
 $repository_path= "/home/93274300500/dev/expresso3";
 
-function e($cmd){
+function e($cmd, $dir="/home/93274300500/dev/expresso3"){
     $stdout ="stdout";
     $stderr ="stderr";
-    $return = cmd_exec($cmd, $stdout, $stderr);
+    $return = cmd_exec($cmd, $stdout, $stderr, $dir);
     echo "-->$cmd\n";
     if($return != 0){
         echo "################################################################################\n";        
@@ -22,7 +22,7 @@ function e($cmd){
 }
 
 
-function cmd_exec($cmd, &$stdout, &$stderr)
+function cmd_exec($cmd, &$stdout, &$stderr, $dir)
 {
     $outfile = tempnam("/tmp", "cmd");
     $errfile = tempnam("/tmp", "cmd");
@@ -31,7 +31,7 @@ function cmd_exec($cmd, &$stdout, &$stderr)
         1 => array("file", $outfile, "w"),
         2 => array("file", $errfile, "w")
     );
-    $proc = proc_open($cmd, $descriptorspec, $pipes);
+    $proc = proc_open($cmd, $descriptorspec, $pipes, $dir);
    
     if (!is_resource($proc)) return 255;
 
@@ -46,14 +46,25 @@ function cmd_exec($cmd, &$stdout, &$stderr)
     return $exit;
 }
 
+e("clear");
+echo "#############################################################################################################\n";
 echo "###################### Iniciando procedimento de teste antes da revisão do ticket $nrevision ######################\n";
-e("cd $repository_path");
+echo "#############################################################################################################\n";
+
 e("git status");
-e("git branch");
+e("git branch tmp");
+e("git checkout tmp");
+e("git branch -D expressov3");
+e("git branch expressov3");
 e("git checkout expressov3");
+e("git reset --hard");
+e("git status");
+e("git fetch -p upstream");
 e("git pull upstream expressov3");
+e("git branch -D revisao_$nrevision"); 
 e("git checkout -b revisao_$nrevision"); 
-e("ssh -p 2222 root@localhost rm -rfv /opt/tmp/tine20/Cache/zend_cache--*");
+e("ssh -p 2222 root@localhost rm -rf /opt/tmp/tine20/Cache/zend_cache--*");
+// e("/home/93274300500/bin/firefox/firefox -P ".tempnam("/tmp", "cmd")." -new-instance"); 
 echo "Se tiver conseguido reproduzir o bug execute o 'git pull' descrito no ticket \n";
 echo "Limpe o cache do seu zend com: \n";
 echo "ssh -p 2222 root@localhost rm -rfv /opt/tmp/tine20/Cache/zend_cache--*\n";
@@ -62,4 +73,3 @@ echo "e verifique se o bug foi resolvido\n";
 echo "Uma vez que você esteja com o ticket em sua máquina proceda com o teste/Principal:. Finalizado o procedimento:\n";
 echo "1- Não aprovado. Reabra o ticket ao desenvolvedor com sua análise. (coloque o ticket como reaberto e mude a atribuição para o desenvolvedor)\n";
 echo "2- Aprovado. Coloque seus comentários (se houverem) e passe o ticket para efetuar o merge. Para isto mude o status para Integrar e passem a atribuição para Cassiano Dal Pizzol.";
-
