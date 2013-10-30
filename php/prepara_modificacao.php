@@ -50,14 +50,11 @@ echo "##########################################################################
 echo "###################### Iniciando procedimento de teste antes da modificacao do ticket $ntask ##################\n";
 echo "#############################################################################################################\n";
 
-
-e("git branch tmp");
-e("git checkout tmp");
+e("git checkout master");
 e("git branch -D expressov3");
-e("git branch expressov3");
-e("git checkout expressov3");
-e("git status");
 e("git fetch -p upstream");
-e("git pull upstream expressov3");
+e("git checkout -b expressov3 upstream/expressov3");
+e("git reset --hard");
+e("git status");
 e("git checkout -b task$ntask"); 
 e("ssh -p 2222 root@localhost rm -rf /opt/tmp/tine20/Cache/zend_cache--*");
