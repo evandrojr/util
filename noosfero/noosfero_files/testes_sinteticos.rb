@@ -10,25 +10,28 @@ contents = File.read(ARGV[0])
 
 tests = assertions = failures = errors = skips = 0
 
-contents.scan(/\d+ tests/) do |ds|
+#vc={:test=>{"d+ tests,"}, :assertion=> }
+
+
+contents.scan(/\d+ tests,/) do |ds|
   ds.scan(/\d+/) do |d|
     tests+= d.to_i
   end
 end
 
-contents.scan(/\d+ assertions/) do |ds|
+contents.scan(/\d+ assertions,/) do |ds|
   ds.scan(/\d+/) do |d|
     assertions+= d.to_i
   end
 end
 
-contents.scan(/\d+ failures/) do |ds|
+contents.scan(/\d+ failures,/) do |ds|
   ds.scan(/\d+/) do |d|
     failures+= d.to_i
   end
 end
 
-contents.scan(/\d+ errors/) do |ds|
+contents.scan(/\d+ errors,/) do |ds|
   ds.scan(/\d+/) do |d|
     errors+= d.to_i
   end
