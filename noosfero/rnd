@@ -1,0 +1,7 @@
+sudo service postgresql stop
+sudo service postgresql start
+psql postgres -c "drop database noosfero_development"
+psql postgres -c "create database noosfero_development"
+psql noosfero_development < ~/projetos/bk_db_noosfero/noosfero_dev_bk
+rake db:migrate
+
